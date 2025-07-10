@@ -18,6 +18,9 @@ phases:
       - trivy fs --format table --exit-code 0 --severity "HIGH,CRITICAL" . > trivy-report.txt
       - echo "Building React app..."
       - npm run build
+      - echo "Copying deployment files..."
+      - cp appspec.yaml build/
+      - cp -r scripts build/
 
   post_build:
     commands:
@@ -25,9 +28,5 @@ phases:
 
 artifacts:
   files:
-    - appspec.yaml
-    - build/**/*
-    - scripts/**/*
-    - trivy-report.txt
-  base-directory: .
-  discard-paths: no
+    - '**/*'
+  base-directory: build
