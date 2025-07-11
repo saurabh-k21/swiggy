@@ -137,6 +137,7 @@ This project is configured for deployment with AWS CodeDeploy.
 
 # User Data for Dependencies installations for AMAZON Linux 2:-
 
+``` bash
 #!/bin/bash
 sudo yum -y update
 sudo yum -y install ruby
@@ -147,3 +148,5 @@ sudo chmod +x ./install
 sudo ./install auto
 sudo yum install -y python-pip
 sudo pip install awscli
+```
+
