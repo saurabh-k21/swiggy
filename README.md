@@ -167,3 +167,78 @@ sudo pip install awscli
 
 ```
 
+
+For CodeDeploy to work, your EC2 instance needs the CodeDeploy Agent installed and running. You also need to attach an IAM Role to
+  your EC2 instance that gives it permission to communicate with CodeDeploy and S3.
+
+
+   1. Create an IAM Role for EC2:
+       * Go to the IAM service in the AWS Console.
+       * Create a new role.
+       * Select AWS service and choose EC2 as the use case.
+       * Attach the following AWS managed policies:
+           * AmazonS3ReadOnlyAccess (so it can download artifacts from S3)
+           * AmazonEC2RoleforAWSCodeDeploy
+       * Give the role a name (e.g., EC2CodeDeployRole) and create it.
+
+
+   2. Launch Your EC2 Instance:
+       * When you launch your Amazon Linux 2 instance, in the "Advanced details" section, attach the IAM role you just created.
+       * Important: In the "User data" field, paste the following script. This will automatically install the CodeDeploy agent and httpd
+         when the instance first boots.
+
+``` bash
+
+   1     #!/bin/bash
+   2     yum update -y
+   3     yum install -y ruby wget httpd
+   4     cd /home/ec2-user
+   5     wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+   6     chmod +x ./install
+   7     ./install auto
+   8     systemctl start codedeploy-agent
+   9     systemctl enable codedeploy-agent
+
+```
+
+   3. Configure Security Group: Ensure your EC2 instance's security group allows incoming traffic on port 80 (HTTP).
+
+  Step 3: Create Your CodeDeploy Application
+
+
+   1. Go to the CodeDeploy service in the AWS Console.
+   2. Click Create application.
+   3. Give it a name (e.g., swiggy-clone-app) and select EC2/On-Premises as the compute platform.
+   4. Click Create application.
+   5. Now, click Create deployment group.
+   6. Give the group a name (e.g., swiggy-clone-dg).
+   7. Service Role: Create a new service role that gives CodeDeploy permissions to interact with EC2. AWS will guide you through this.
+   8. Deployment Type: Select In-place.
+   9. Environment Configuration: Select Amazon EC2 instances and tag the EC2 instance you launched (e.g., by Name tag).
+   10. Deployment Settings: Choose CodeDeployDefault.OneAtATime.
+   11. Load Balancer: Uncheck "Enable load balancing".
+   12. Click Create deployment group.
+
+
+  Step 4: Create Your CodePipeline
+
+  This is the final step where you tie everything together.
+
+
+   1. Go to the CodePipeline service.
+   2. Click Create pipeline.
+   3. Pipeline Name: Give it a name (e.g., swiggy-clone-pipeline).
+   4. Source Stage:
+       * Select your source provider (e.g., GitHub, CodeCommit).
+       * Connect to your repository and select the branch.
+   5. Build Stage:
+       * Select AWS CodeBuild as the provider.
+       * Select the CodeBuild project you have been using.
+   6. Deploy Stage:
+       * Select AWS CodeDeploy as the provider.
+       * Select the application and deployment group you just created.
+   7. Review and Create pipeline.
+
+
+
+
