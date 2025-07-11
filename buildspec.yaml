@@ -15,9 +15,9 @@ phases:
       - yum update -y
       - yum install -y httpd java-1.8.0-openjdk python3
       - echo "Installing OWASP ZAP..."
-      - wget https://github.com/zaproxy/zaproxy/releases/download/v2.14.0/ZAP_2.14.0_Linux.tar.gz
-      - tar -xvf ZAP_2.14.0_Linux.tar.gz
-      - mv ZAP_2.14.0 /usr/local/zap
+      - wget https://github.com/zaproxy/zaproxy/releases/download/v2.15.0/ZAP_2.15.0_Linux.tar.gz
+      - tar -xvf ZAP_2.15.0_Linux.tar.gz
+      - mv ZAP_2.15.0 /usr/local/zap
       - wget https://raw.githubusercontent.com/zaproxy/zaproxy/main/docker/zap-baseline.py
       - chmod +x zap-baseline.py
 
