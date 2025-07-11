@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - echo "Installing Trivy..."
+      - wget https://github.com/aquasecurity/trivy/releases/download/v0.29.2/trivy_0.29.2_Linux-64bit.tar.gz
+      - tar zxvf trivy_0.29.2_Linux-64bit.tar.gz
+      - mv trivy /usr/local/bin/
+      - echo "Installing dependencies..."
+      - npm ci
+
+  build:
+    commands:
+      - echo "Running Trivy scan on the filesystem..."
+      - trivy fs --format table --exit-code 0 --severity "HIGH,CRITICAL" . > trivy-report.txt
+      - echo "Building React app..."
+      - npm run build
+      - echo "Copying deployment files..."
+      - cp appspec.yaml build/
+      - cp -r scripts build/
+
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
