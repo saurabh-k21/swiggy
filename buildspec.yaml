@@ -11,15 +11,6 @@ phases:
       - mv trivy /usr/local/bin/
       - echo "Installing dependencies..."
       - npm ci
-      # - echo "Installing Apache, JRE, and Python..."
-      # - yum update -y
-      # - yum install -y httpd java-1.8.0-openjdk python3
-      # - echo "Installing OWASP ZAP..."
-      # - wget https://github.com/zaproxy/zaproxy/releases/download/v2.15.0/ZAP_2.15.0_Linux.tar.gz
-      # - tar -xvf ZAP_2.15.0_Linux.tar.gz
-      # - mv ZAP_2.15.0 /usr/local/zap
-      # - wget https://raw.githubusercontent.com/zaproxy/zaproxy/main/docker/zap-baseline.py
-      # - chmod +x zap-baseline.py
 
   build:
     commands:
@@ -27,26 +18,9 @@ phases:
       - trivy fs --format table --exit-code 0 --severity "HIGH,CRITICAL" . > trivy-report.txt
       - echo "Building React app..."
       - npm run build
-      # - echo "Copying build to Apache webroot..."
-      # - cp -r build/* /var/www/html/
-      # - echo "Starting Apache server..."
-      # - /usr/sbin/httpd
-      # - sleep 5
-      # - echo "Starting OWASP ZAP daemon..."
-      # - /usr/local/zap/zap.sh -daemon &
-      # - echo "Waiting for ZAP to start..."
-      # - sleep 20
-      # - echo "Running OWASP ZAP baseline scan..."
-      # - python3 zap-baseline.py -t http://localhost -r owasp-zap-report.html
-      # - echo "Stopping OWASP ZAP..."
-      # - killall java
-      # - echo "Stopping Apache server..."
-      # - killall httpd
-      - echo "Copying reports and deployment files to build directory..."
+      - echo "Copying deployment files..."
       - cp appspec.yaml build/
       - cp -r scripts build/
-      # - cp owasp-zap-report.html build/
-      - cp trivy-report.txt build/
 
   post_build:
     commands:
