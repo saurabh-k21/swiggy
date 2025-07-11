@@ -239,6 +239,23 @@ For CodeDeploy to work, your EC2 instance needs the CodeDeploy Agent installed a
        * Select the application and deployment group you just created.
    7. Review and Create pipeline.
 
-
+``` bash
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Action": [
+				"codebuild:BatchGetBuilds",
+				"codebuild:StartBuild",
+				"codebuild:StopBuild",
+				"codebuild:BatchGetProjects",
+				"codebuild:ListBuildsForProject"
+			],
+			"Resource": "arn:aws:codebuild:us-east-1:350903502296:project/swiggy"
+		}
+	]
+}
+```
 
 
