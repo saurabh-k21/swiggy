@@ -30,7 +30,7 @@ phases:
       - echo "Copying build to Apache webroot..."
       - cp -r build/* /var/www/html/
       - echo "Starting Apache server..."
-      - systemctl start httpd
+      - /usr/sbin/httpd
       - sleep 5
       - echo "Starting OWASP ZAP daemon..."
       - /usr/local/zap/zap.sh -daemon &
@@ -41,7 +41,7 @@ phases:
       - echo "Stopping OWASP ZAP..."
       - killall java
       - echo "Stopping Apache server..."
-      - systemctl stop httpd
+      - killall httpd
       - echo "Copying reports and deployment files to build directory..."
       - cp appspec.yaml build/
       - cp -r scripts build/
